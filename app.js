@@ -7,6 +7,10 @@ var uiController = (function () {
     addBtn: ".add__btn",
     incomeList: ".income__list",
     expensesList: ".expenses__list",
+    budgetLabel: ".budget__value",
+    budgetIncLabel: ".budget__income--value",
+    budgetExpLabel: ".budget__expenses--value",
+    budgetPercLabel: ".budget__expenses--percentage",
   };
 
   return {
@@ -32,9 +36,23 @@ var uiController = (function () {
       });
 
       fieldsArr[0].focus();
-      // for (var i = 0; i < fields.length; i++) {
-      //   fields[i].value = "";
-      // }
+    },
+
+    showBudget: function (budget) {
+      document.querySelector(domStrings.budgetLabel).textContent =
+        budget.budget;
+      document.querySelector(domStrings.budgetIncLabel).textContent =
+        budget.totalInc;
+      document.querySelector(domStrings.budgetExpLabel).textContent =
+        budget.totalExp;
+
+      if (budget.percent !== 0) {
+        document.querySelector(domStrings.budgetPercLabel).textContent =
+          budget.percent + "%";
+      } else {
+        document.querySelector(domStrings.budgetPercLabel).textContent =
+          budget.percent;
+      }
     },
 
     addListItem: function (item, type) {
@@ -160,11 +178,12 @@ var appController = (function (uiController, financeController) {
 
       //4. Tusviig tootsoolno
       financeController.calcBudget();
+
       //5. Etssiin uldegdel, tootsoog delgetsend gargana
       var budget = financeController.getBudget();
 
       //6. Tusviin tootsoog delgetsend gargana.
-      console.log(budget);
+      uiController.showBudget(budget);
     }
   };
 
@@ -182,6 +201,12 @@ var appController = (function (uiController, financeController) {
   return {
     init: function () {
       console.log("Application started");
+      uiController.showBudget({
+        budget: 0,
+        percent: 0,
+        totalInc: 0,
+        totalExp: 0,
+      });
       setupEventListeners();
     },
   };
